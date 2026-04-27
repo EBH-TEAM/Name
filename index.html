@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="bn">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>EARNING BY HABIB | Name & Password Generator</title>
+    <title>EBH Toolkit | 2FA + Password + Name</title>
     <style>
         * {
             margin: 0;
@@ -19,459 +19,471 @@
             color: #1e293b;
         }
 
-        .main-card {
+        .main-container {
             max-width: 550px;
             width: 100%;
             margin: 0 auto;
-            background: #ffffff;
-            border-radius: 32px;
-            box-shadow: 0 20px 35px -10px rgba(0, 0, 0, 0.1), 0 0 0 1px rgba(0, 0, 0, 0.02);
-            overflow: hidden;
         }
 
+        /* Header */
         .header {
-            background: linear-gradient(135deg, #1e3a8a 0%, #2563eb 100%);
-            padding: 20px 20px 18px;
             text-align: center;
-            position: relative;
-        }
-
-        .header::after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            height: 5px;
-            background: linear-gradient(90deg, #ef4444, #ffffff, #ef4444);
+            margin-bottom: 20px;
         }
 
         .logo-box {
             background: white;
             border-radius: 60px;
-            padding: 10px 12px;
+            padding: 8px 20px;
             display: inline-block;
-            box-shadow: 0 8px 20px rgba(0,0,0,0.15);
-            cursor: pointer;
-            transition: transform 0.2s;
-        }
-
-        .logo-box:hover {
-            transform: scale(1.02);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            border: 1px solid #e2e8f0;
         }
 
         .logo-text {
-            font-size: 1.6rem;
+            font-size: 1.3rem;
             font-weight: 800;
             background: linear-gradient(135deg, #dc2626, #2563eb);
             -webkit-background-clip: text;
             background-clip: text;
             color: transparent;
-            letter-spacing: -0.5px;
         }
 
         .datetime {
-            font-size: 0.85rem;
-            margin-top: 12px;
-            color: #e0e7ff;
-            font-weight: 500;
+            font-size: 0.7rem;
+            margin-top: 6px;
+            color: #64748b;
         }
 
-        .content {
-            padding: 20px 24px 30px;
+        /* Cards */
+        .card {
+            background: #ffffff;
+            border-radius: 24px;
+            padding: 18px;
+            margin-bottom: 20px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.05);
+            border: 1px solid #e2e8f0;
+            transition: all 0.2s;
         }
 
-        .top-buttons {
+        .card:hover {
+            box-shadow: 0 12px 28px rgba(0,0,0,0.1);
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid;
+        }
+
+        .card-2fa .card-header { border-bottom-color: #2563eb; }
+        .card-passname .card-header { border-bottom-color: #dc2626; }
+
+        .card-header .icon { font-size: 1.5rem; }
+        .card-header h3 { font-size: 1.1rem; font-weight: 700; color: #1e293b; }
+
+        /* Display Box */
+        .display-box {
+            background: #f8fafc;
+            border-radius: 16px;
+            padding: 12px 14px;
+            font-family: monospace;
+            font-size: 0.9rem;
+            word-break: break-all;
+            text-align: center;
+            border: 1px solid #e2e8f0;
+            color: #0f172a;
+            transition: all 0.1s;
+        }
+
+        .password-box {
+            background: #fff7ed;
+            border-color: #fed7aa;
+        }
+
+        .name-box {
+            background: #f0fdf4;
+            border-color: #bbf7d0;
+        }
+
+        /* Button Group - কপি বামে, চেঞ্জ ডানে */
+        .btn-group {
             display: flex;
             gap: 12px;
-            margin-bottom: 20px;
-            flex-wrap: wrap;
+            margin-top: 12px;
         }
 
         .btn {
             flex: 1;
-            padding: 14px 8px;
+            padding: 10px;
             border: none;
-            border-radius: 60px;
+            border-radius: 40px;
             font-weight: 700;
-            font-size: 0.95rem;
             cursor: pointer;
-            transition: all 0.25s ease;
-            text-align: center;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            transition: 0.2s;
+            font-size: 0.85rem;
         }
 
-        .btn-telegram {
-            background: #1e3a8a;
+        .btn-copy {
+            background: #2563eb;
             color: white;
-            border: 1px solid #3b82f6;
+            order: 1;
         }
 
-        .btn-telegram:hover {
-            background: #1e40af;
-            transform: translateY(-2px);
-            box-shadow: 0 10px 20px -5px rgba(30,58,138,0.3);
+        .btn-copy:hover {
+            background: #1d4ed8;
+            transform: scale(0.97);
         }
 
-        .btn-admin {
+        .btn-change {
             background: #dc2626;
             color: white;
-            border: 1px solid #f87171;
+            order: 2;
         }
 
-        .btn-admin:hover {
+        .btn-change:hover {
             background: #b91c1c;
-            transform: translateY(-2px);
-            box-shadow: 0 10px 20px -5px rgba(220,38,38,0.3);
+            transform: scale(0.97);
         }
 
-        .scrolling-text-container {
-            background: #f1f5f9;
-            border-radius: 40px;
-            padding: 10px 0;
-            margin: 15px 0 10px;
-            border: 1px solid #cbd5e1;
-            overflow: hidden;
-            white-space: nowrap;
-        }
-
-        .scrolling-text {
-            font-weight: 600;
+        /* 2FA Specific */
+        .fa-input {
+            width: 100%;
+            padding: 16px;
+            border-radius: 50px;
+            border: 2px solid #3b82f6;
+            background: #f8fafc;
             color: #1e293b;
-            letter-spacing: 1px;
-            animation: scrollText 12s linear infinite;
-            display: inline-block;
-            padding-left: 100%;
+            font-family: monospace;
+            font-size: 1rem;
+            text-align: center;
+            margin: 10px 0;
+            box-shadow: 0 0 0 1px rgba(59,130,246,0.2);
         }
 
-        @keyframes scrollText {
-            0% { transform: translateX(0); }
-            100% { transform: translateX(-100%); }
+        .fa-input:focus {
+            outline: none;
+            border-color: #dc2626;
+            box-shadow: 0 0 0 2px rgba(220,38,38,0.1);
+        }
+
+        .otp-code {
+            font-size: 1.5rem;
+            font-weight: 800;
+            letter-spacing: 4px;
+            color: #dc2626;
+            text-align: center;
+            margin: 10px 0;
+            background: #fef2f2;
+            padding: 8px 12px;
+            border-radius: 16px;
+            font-family: monospace;
+        }
+
+        .timer-bar {
+            height: 4px;
+            background: #2563eb;
+            border-radius: 4px;
+            width: 100%;
+            transition: width 0.3s linear;
+        }
+
+        .label-text {
+            font-size: 0.7rem;
+            color: #64748b;
+        }
+
+        .flex-between {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .clear-btn-small {
+            background: #ef4444;
+            color: white;
+            border: none;
+            padding: 6px 16px;
+            border-radius: 40px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .clear-btn-small:hover {
+            background: #dc2626;
+            transform: scale(0.97);
         }
 
         hr {
             margin: 15px 0;
             border: 0;
-            height: 2px;
-            background: linear-gradient(90deg, #bfdbfe, #ef4444, #bfdbfe);
-        }
-
-        .label {
-            font-weight: 700;
-            font-size: 0.9rem;
-            margin-bottom: 6px;
-            margin-top: 12px;
-            color: #1e293b;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .display-box {
-            background: #f8fafc;
-            border: 1.5px solid #e2e8f0;
-            border-radius: 20px;
-            padding: 14px 18px;
-            font-size: 1rem;
-            font-weight: 500;
-            word-break: break-word;
-            color: #0f172a;
-            transition: all 0.2s;
-            box-shadow: inset 0 1px 3px #0001, 0 1px 2px #fff8;
-        }
-
-        .password-box {
-            font-family: 'Courier New', monospace;
-            letter-spacing: 0.5px;
-            background: #fff7ed;
-            border-color: #fed7aa;
-        }
-
-        .double-buttons {
-            display: flex;
-            gap: 12px;
-            margin: 12px 0 8px;
-        }
-
-        .action-btn {
-            flex: 1;
-            padding: 12px 8px;
-            border-radius: 60px;
-            font-weight: 700;
-            border: none;
-            font-size: 0.9rem;
-            cursor: pointer;
-            transition: all 0.2s;
-            background: white;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-        }
-
-        .copy-btn {
-            background: #2563eb;
-            color: white;
-            border: 1px solid #3b82f6;
-        }
-
-        .copy-btn:hover {
-            background: #1d4ed8;
-            transform: scale(0.98);
-        }
-
-        .change-btn {
-            background: #dc2626;
-            color: white;
-            border: 1px solid #ef4444;
-        }
-
-        .change-btn:hover {
-            background: #b91c1c;
-            transform: scale(0.98);
-        }
-
-        @media (max-width: 480px) {
-            .content {
-                padding: 16px;
-            }
-            .btn, .action-btn {
-                padding: 12px 6px;
-                font-size: 0.8rem;
-            }
-            .logo-text {
-                font-size: 1.3rem;
-            }
+            height: 1px;
+            background: linear-gradient(90deg, transparent, #cbd5e1, transparent);
         }
 
         footer {
             text-align: center;
-            font-size: 0.7rem;
+            font-size: 0.65rem;
             color: #94a3b8;
-            margin-top: 20px;
+            margin-top: 15px;
         }
     </style>
 </head>
 <body>
-<div class="main-card">
+<div class="main-container">
     <div class="header">
-        <div class="logo-box" onclick="window.location.href='https://earningbyhabib.github.io/Tempmail/Note.html'">
-            <div class="logo-text">👑 EARNING BY HABIB 💸</div>
+        <div class="logo-box">
+            <div class="logo-text"> EBH TEAM</div>
         </div>
         <div class="datetime" id="datetime"></div>
     </div>
 
-    <div class="content">
-        <div class="top-buttons">
-            <button class="btn btn-telegram" onclick="window.open('https://www.t.me/earningbyhabib', '_blank')">📢 Telegram Group</button>
-            <button class="btn btn-admin" onclick="window.open('https://t.me/EBH_5', '_blank')">📞 Admin Contact</button>
+    <!-- কার্ড ১: 2FA -->
+    <div class="card card-2fa">
+        <div class="card-header">
+            <span class="icon">📱</span>
+            <h3>লাইভ ২FA কোড (TOTP)</h3>
         </div>
-
-        <div class="scrolling-text-container">
-            <div class="scrolling-text">★ Presented By ★ EARNING BY HABIB ★ Premium Name & Pass Generator ★</div>
+        <input type="text" class="fa-input" id="twofaKey" placeholder="এখানে আপনার Base32 সিক্রেট কী পেস্ট করুন" autocomplete="off">
+        <div class="otp-code" id="otpDisplay">------</div>
+        <div class="timer-bar" id="timerBar"></div>
+        <div class="flex-between" style="margin-top: 12px;">
+            <span class="label-text">✅ পেস্ট করলেই অটো জেনারেট & কপি</span>
+            <button class="clear-btn-small" id="clear2faBtn">🗑️ ক্লিয়ার</button>
         </div>
-        <hr>
-
-        <!-- PASSWORD SECTION -->
-        <div class="label">
-            🔐 PASSWORD <span style="font-size: 0.7rem;">(starts with a letter + ends with today's date)</span>
-        </div>
-        <div class="display-box password-box" id="passwordDisplay">------</div>
-        <div class="double-buttons">
-            <button class="action-btn copy-btn" id="copyPassBtn">📋 Copy Password</button>
-            <button class="action-btn change-btn" id="genPassBtn">🔄 Generate Password</button>
-        </div>
-
-        <!-- NAME SECTION -->
-        <div class="label">
-            👤 FULL NAME (First + Last)
-        </div>
-        <div class="display-box" id="nameDisplay">Loading...</div>
-        <div class="double-buttons">
-            <button class="action-btn copy-btn" id="copyNameBtn">📋 Copy Name</button>
-            <button class="action-btn change-btn" id="genNameBtn">✨ Change Name</button>
-        </div>
-        <footer>© EARNING BY HABIB | Auto daily password reset at 11 PM</footer>
     </div>
+
+    <!-- কার্ড ২: পাসওয়ার্ড + নাম -->
+    <div class="card card-passname">
+        <div class="card-header">
+            <span class="icon">🔑👤</span>
+            <h3>পাসওয়ার্ড + রেন্ডম নাম</h3>
+        </div>
+        
+        <!-- পাসওয়ার্ড সেকশন -->
+        <div class="label-text" style="margin-bottom: 5px;">🔐 পাসওয়ার্ড</div>
+        <div class="display-box password-box" id="passwordDisplay">••••••••</div>
+        <div class="btn-group">
+            <button class="btn btn-copy" id="copyPassBtn">📋 কপি</button>
+            <button class="btn btn-change" id="changePassBtn">🔄 চেঞ্জ</button>
+        </div>
+        
+        <!-- নাম সেকশন -->
+        <div class="label-text" style="margin: 15px 0 5px 0;">👤 র্যান্ডম নাম</div>
+        <div class="display-box name-box" id="nameDisplay">নাম দেখাবে</div>
+        <div class="btn-group">
+            <button class="btn btn-copy" id="copyNameBtn">📋 কপি</button>
+            <button class="btn btn-change" id="changeNameBtn">🔄 চেঞ্জ</button>
+        </div>
+    </div>
+
+    <footer>© EARNING BY HABIB | 2FA পেস্ট করলেই অটো | কপি(বাম) + চেঞ্জ(ডান)</footer>
 </div>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
 <script>
-    // ======================== 1000+ INTERNATIONAL FEMALE NAMES (First + Last) - NO NUMBERS ========================
-    const cleanNamesList = [
-        "Emma Johnson", "Olivia Williams", "Sophia Brown", "Isabella Jones", "Mia Garcia", "Amelia Miller", "Harper Davis", "Evelyn Rodriguez", "Abigail Martinez", "Emily Hernandez",
-        "Elizabeth Lopez", "Sofia Gonzalez", "Aurora Wilson", "Grace Anderson", "Chloe Thomas", "Victoria Taylor", "Penelope Moore", "Riley Jackson", "Layla Martin", "Luna Lee",
-        "Zoe Perez", "Nora Thompson", "Lily White", "Eleanor Harris", "Hannah Sanchez", "Lillian Clark", "Addison Ramirez", "Aubrey Lewis", "Ellie Robinson", "Stella Walker",
-        "Natalie Young", "Zara Allen", "Mila King", "Leah Wright", "Lucy Scott", "Anna Green", "Samantha Baker", "Carolina Adams", "Camila Nelson", "Gianna Carter",
-        "Julia Mitchell", "Valentina Roberts", "Alina Turner", "Diana Phillips", "Elena Campbell", "Irina Parker", "Maria Evans", "Olga Edwards", "Svetlana Collins", "Anastasia Stewart",
-        "Tatiana Sanchez", "Nadia Morris", "Vera Rogers", "Galina Reed", "Larisa Cook", "Polina Morgan", "Daria Bell", "Yulia Murphy", "Ksenia Bailey", "Alisa Rivera",
-        "Eva Cooper", "Viktoria Richardson", "Margarita Cox", "Oksana Howard", "Yana Ward", "Mila Torres", "Alina Peterson", "Kamila Gray", "Sofiya Ramirez", "Veronika James",
-        "Arina Watson", "Ekaterina Brooks", "Elizaveta Kelly", "Anna Sanders", "Olga Price", "Tatiana Bennett", "Natalia Wood", "Irina Barnes", "Elena Ross", "Svetlana Henderson",
-        "Marina Coleman", "Anastasia Jenkins", "Vera Perry", "Nadezhda Powell", "Lyubov Long", "Lydia Patterson", "Zinaida Hughes", "Raisa Flores", "Kira Washington", "Lada Butler",
-        "Maya Simmons", "Yaroslavna Foster", "Lena Gonzales", "Ira Bryant", "Zoya Alexander", "Rada Russell", "Dina Griffin", "Taisia Diaz", "Olena Hayes", "Kateryna Myers",
-        "Nika Ford", "Milana Hamilton", "Alevtina Graham", "Rimma Sullivan", "Inna Wallace", "Alla Woods", "Ella Cole", "Lilia West", "Sonya Jordan", "Rita Owens",
-        "Zemfira Reynolds", "Karina Fisher", "Liana Ellis", "Rosa Harrison", "Faina Gibson", "Vlada Mcdonald", "Tamara Cruz", "Nellie Marshall", "Martha Ortiz", "Daisy Gomez",
-        "Flora Murray", "Lora Freeman", "Stacy Wells", "Tracy Webb", "Wendy Simpson", "Pamela Stevens", "Ruby Tucker", "Crystal Porter", "Tiffany Hunter", "Heather Hicks",
-        "Courtney Crawford", "Jasmine Henry", "Leila Boyd", "Nina Grant", "Lola Morales", "Kylie Vargas", "Jade Hamilton", "Bella Hawkins", "Rebecca Lynch", "Michelle Holmes",
-        "Laura Rice", "Sarah Robertson", "Kimberly Dixon", "Deborah Hunt", "Linda Palmer", "Patricia Mills", "Barbara Nichols", "Susan Grant", "Jessica Knight", "Ashley Ferguson",
-        "Brenda Rose", "Shirley Stone", "Amy Hawkins", "Carolyn Dunn", "Rachel Perkins", "Heather Hudson", "Cynthia Spencer", "Kathleen Gardner", "Sandra Stephens", "Sharon Payne",
-        "Anna Pierce", "Ruth Berry", "Frances Matthews", "Marilyn Arnold", "Teresa Wagner", "Janet Willis", "Alice Ray", "Kathryn Watson", "Andrea Burns", "Julie Porter",
-        "Martha Collins", "Doris Stewart", "Evelyn Murphy", "Cheryl Cook", "Mildred Bailey", "Gloria Rivera", "Rebecca Cooper", "Shirley Richardson", "Laura Cox", "Beverly Howard",
-        "Debra Ward", "Angela Torres", "Georgia Peterson", "Lori Gray", "Tina Ramirez", "Diana James", "Amanda Watson", "Connie Brooks", "Tammy Kelly", "Vanessa Sanders",
-        "Sylvia Price", "Theresa Bennett", "Judy Wood", "Bonnie Barnes", "Megan Ross", "Holly Henderson", "Dawn Coleman", "Sherry Jenkins", "Paula Perry", "Catherine Powell",
-        "Marian Long", "Annie Patterson", "Marlene Hughes", "Vicki Flores", "Judith Washington", "Constance Butler", "Gail Simmons", "Lynn Foster", "Janice Gonzales", "Eileen Bryant",
-        "Phyllis Alexander", "Lillian Russell", "April Griffin", "Rose Diaz", "Marie Hayes", "Ruby Myers", "Grace Ford", "Denise Hamilton", "Michele Graham", "Brittany Sullivan",
-        "Nicole Wallace", "Katherine Woods", "Karen Cole", "Stephanie West", "Christina Jordan", "Rachel Owens", "Crystal Reynolds", "Erin Fisher", "Lauren Ellis", "Alyssa Harrison",
-        "Brianna Gibson", "Mackenzie Mcdonald", "Kaitlyn Cruz", "Hannah Marshall", "Kayla Ortiz", "Taylor Gomez", "Madison Murray", "Natalie Freeman", "Sydney Wells", "Morgan Webb",
-        "Savannah Simpson", "Alexis Stevens", "Chloe Tucker", "Ella Porter", "Hailey Hunter", "Sarah Hicks", "Abigail Crawford", "Emily Henry", "Elizabeth Boyd", "Mia Grant",
-        "Isabella Morales", "Sofia Garcia", "Olivia Martinez", "Emma Rodriguez", "Ava Wilson", "Lily Anderson", "Zoe Thomas", "Grace Taylor", "Nora Moore", "Lucy Jackson",
-        "Mila Martin", "Elena Lee", "Victoria Perez", "Madeline Thompson", "Sophia White", "Camila Harris", "Layla Sanchez", "Penelope Clark", "Riley Ramirez", "Luna Lewis",
-        "Chloe Robinson", "Aurora Walker", "Ellie Young", "Stella Allen", "Hannah King", "Addison Wright", "Aubrey Scott", "Natalie Green", "Zara Baker", "Leah Adams",
-        "Anna Nelson", "Samantha Carter", "Carolina Mitchell", "Julia Roberts", "Valentina Turner", "Alina Phillips", "Diana Campbell", "Irina Parker", "Maria Evans", "Olga Edwards",
-        "Svetlana Stewart", "Anastasia Sanchez", "Tatiana Morris", "Nadia Rogers", "Vera Reed", "Galina Cook", "Larisa Morgan", "Polina Bell", "Daria Murphy", "Yulia Bailey",
-        "Ksenia Rivera", "Alisa Cooper", "Eva Richardson", "Viktoria Cox", "Margarita Howard", "Oksana Torres", "Yana Peterson", "Mila Gray", "Alina Ramirez", "Kamila James",
-        "Sofiya Watson", "Veronika Brooks", "Arina Kelly", "Ekaterina Sanders", "Elizaveta Price", "Anna Bennett", "Olga Wood", "Tatiana Barnes", "Natalia Ross", "Irina Henderson",
-        "Elena Coleman", "Svetlana Jenkins", "Marina Perry", "Anastasia Powell", "Vera Long", "Nadezhda Patterson", "Lyubov Hughes", "Lydia Flores", "Zinaida Washington", "Raisa Butler",
-        "Kira Simmons", "Lada Foster", "Maya Gonzales", "Yaroslavna Bryant", "Lena Alexander", "Ira Russell", "Zoya Griffin", "Rada Diaz", "Dina Hayes", "Taisia Myers",
-        "Olena Ford", "Kateryna Hamilton", "Nika Graham", "Milana Sullivan", "Alevtina Wallace", "Rimma Woods", "Inna Cole", "Alla West", "Ella Jordan", "Lilia Owens",
-        "Sonya Reynolds", "Rita Fisher", "Zemfira Ellis", "Karina Harrison", "Liana Gibson", "Rosa Mcdonald", "Faina Cruz", "Vlada Marshall", "Tamara Ortiz", "Nellie Gomez",
-        "Martha Murray", "Daisy Freeman", "Flora Wells", "Lora Webb", "Stacy Simpson", "Tracy Stevens", "Wendy Tucker", "Pamela Porter", "Ruby Hunter", "Crystal Hicks",
-        "Tiffany Crawford", "Heather Henry", "Courtney Boyd", "Jasmine Grant", "Leila Morales", "Nina Vargas", "Lola Hamilton", "Kylie Hawkins", "Jade Lynch", "Bella Shaw",
-        "Stacy Holmes", "Rebecca Rice", "Michelle Robertson", "Laura Dixon", "Sarah Hunt", "Kimberly Palmer", "Deborah Mills", "Linda Nichols", "Patricia Grant", "Barbara Rose",
-        "Susan Stone", "Jessica Hawkins", "Ashley Dunn", "Brenda Perkins", "Shirley Hudson", "Amy Spencer", "Carolyn Gardner", "Rachel Stephens", "Heather Payne", "Cynthia Pierce",
-        "Kathleen Berry", "Sandra Matthews", "Sharon Arnold", "Anna Wagner", "Ruth Willis", "Frances Ray", "Marilyn Burns", "Teresa Porter", "Janet Collins", "Alice Stewart",
-        "Kathryn Murphy", "Andrea Cook", "Julie Bailey", "Martha Rivera", "Doris Cooper", "Evelyn Richardson", "Cheryl Cox", "Mildred Howard", "Gloria Torres", "Rebecca Peterson",
-        "Shirley Gray", "Laura Ramirez", "Beverly James", "Debra Watson", "Angela Brooks", "Georgia Kelly", "Lori Sanders", "Tina Price", "Diana Bennett", "Amanda Wood",
-        "Connie Barnes", "Tammy Ross", "Vanessa Henderson", "Sylvia Coleman", "Theresa Jenkins", "Judy Perry", "Bonnie Powell", "Megan Long", "Holly Patterson", "Dawn Hughes",
-        "Sherry Flores", "Paula Washington", "Catherine Butler", "Marian Simmons", "Annie Foster", "Marlene Gonzales", "Vicki Bryant", "Judith Alexander", "Constance Russell",
-        "Gail Griffin", "Lynn Diaz", "Janice Hayes", "Eileen Myers", "Phyllis Ford", "Lillian Hamilton", "April Graham", "Rose Sullivan", "Marie Wallace", "Ruby Woods"
-    ];
+    // ======================== 2FA TOTP সিস্টেম ========================
+    let currentSecret = '';
+    let timerInterval = null;
 
-    // Ensure we have exactly 1000 unique clean names (no numbers anywhere)
-    const FINAL_NAMES = cleanNamesList.slice(0, 1000);
-    while(FINAL_NAMES.length < 1000) {
-        FINAL_NAMES.push("Olivia Smith");
+    function base32Decode(base32) {
+        const alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ234567';
+        base32 = base32.replace(/\s+/g, '').replace(/=+$/, '').toUpperCase();
+        let bits = 0, value = 0, output = [];
+        for (let i = 0; i < base32.length; i++) {
+            const index = alphabet.indexOf(base32[i]);
+            if (index === -1) throw new Error('Invalid Base32');
+            value = (value << 5) | index;
+            bits += 5;
+            if (bits >= 8) {
+                output.push((value >>> (bits - 8)) & 0xFF);
+                bits -= 8;
+            }
+        }
+        return new Uint8Array(output);
     }
 
-    // DOM elements
-    const nameDisplay = document.getElementById('nameDisplay');
-    const passwordDisplay = document.getElementById('passwordDisplay');
-    const genNameBtn = document.getElementById('genNameBtn');
-    const copyNameBtn = document.getElementById('copyNameBtn');
-    const genPassBtn = document.getElementById('genPassBtn');
-    const copyPassBtn = document.getElementById('copyPassBtn');
+    function generateTOTP(secret) {
+        try {
+            const key = base32Decode(secret);
+            const keyWA = CryptoJS.lib.WordArray.create(key);
+            const counter = Math.floor(Date.now() / 1000 / 30);
+            const counterBytes = new ArrayBuffer(8);
+            const counterView = new DataView(counterBytes);
+            counterView.setUint32(4, counter);
+            const counterWA = CryptoJS.lib.WordArray.create(new Uint8Array(counterBytes));
+            const hmac = CryptoJS.HmacSHA1(counterWA, keyWA);
+            const hmacHex = hmac.toString(CryptoJS.enc.Hex);
+            const offset = parseInt(hmacHex.substr(39, 1), 16) * 2;
+            const otpHex = hmacHex.substr(offset, 8);
+            let otp = parseInt(otpHex, 16) & 0x7FFFFFFF;
+            otp = otp % 1000000;
+            return otp.toString().padStart(6, '0');
+        } catch(e) {
+            return 'ERROR';
+        }
+    }
 
-    // =============== PASSWORD GENERATOR (Starts with English Letter, ends with today's date) ===========
+    function updateOtpDisplay() {
+        if (!currentSecret) {
+            document.getElementById('otpDisplay').textContent = '------';
+            return;
+        }
+        const code = generateTOTP(currentSecret);
+        document.getElementById('otpDisplay').textContent = code;
+        navigator.clipboard.writeText(code);
+        const otpEl = document.getElementById('otpDisplay');
+        otpEl.style.transform = 'scale(0.97)';
+        setTimeout(() => otpEl.style.transform = 'scale(1)', 120);
+    }
+
+    function startTimer() {
+        if (timerInterval) clearInterval(timerInterval);
+        function tick() {
+            if (!currentSecret) return;
+            const now = Math.floor(Date.now() / 1000);
+            const remaining = 30 - (now % 30);
+            const percent = (remaining / 30) * 100;
+            document.getElementById('timerBar').style.width = percent + '%';
+            if (remaining === 30 || remaining === 1) updateOtpDisplay();
+        }
+        tick();
+        timerInterval = setInterval(tick, 1000);
+    }
+
+    function init2FAFromInput() {
+        const secret = document.getElementById('twofaKey').value.trim();
+        if (secret === '') {
+            currentSecret = '';
+            document.getElementById('otpDisplay').textContent = '------';
+            document.getElementById('timerBar').style.width = '0%';
+            if (timerInterval) clearInterval(timerInterval);
+            return;
+        }
+        currentSecret = secret;
+        updateOtpDisplay();
+        startTimer();
+    }
+
+    function clear2FA() {
+        document.getElementById('twofaKey').value = '';
+        currentSecret = '';
+        document.getElementById('otpDisplay').textContent = '------';
+        document.getElementById('timerBar').style.width = '0%';
+        if (timerInterval) clearInterval(timerInterval);
+    }
+
+    const twofaInput = document.getElementById('twofaKey');
+    twofaInput.addEventListener('paste', () => setTimeout(init2FAFromInput, 10));
+    twofaInput.addEventListener('input', init2FAFromInput);
+    document.getElementById('clear2faBtn').addEventListener('click', clear2FA);
+
+    // ======================== পাসওয়ার্ড জেনারেটর ========================
     function getRandomLetter() {
         const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
         return letters.charAt(Math.floor(Math.random() * letters.length));
     }
-
-    function getRandomCharFromSet(set) {
+    function getRandomChar(set) {
         return set.charAt(Math.floor(Math.random() * set.length));
     }
-
-    function generateSecurePassword() {
+    function generatePassword() {
         const lower = 'abcdefghijklmnopqrstuvwxyz';
         const upper = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
         const digits = '0123456789';
         const special = '!@#$%^&*()_+~`|}{[]\\:;?><,./-=';
-
-        // First character MUST be a letter
-        let password = getRandomLetter(); 
-
-        const remainingLength = 10; // total base length will be 10 (first + 9 more)
-        let charsetAll = lower + upper + digits + special;
-
-        for (let i = 0; i < remainingLength - 1; i++) {
-            password += getRandomCharFromSet(charsetAll);
-        }
-
-        // Shuffle only the part after the first character (first letter stays at position 0)
+        let password = getRandomLetter();
+        const allChars = lower + upper + digits + special;
+        for (let i = 0; i < 9; i++) password += getRandomChar(allChars);
         let arr = password.split('');
-        let firstChar = arr[0];
+        let first = arr[0];
         let rest = arr.slice(1);
         for (let i = rest.length - 1; i > 0; i--) {
             const j = Math.floor(Math.random() * (i + 1));
             [rest[i], rest[j]] = [rest[j], rest[i]];
         }
-        let shuffledPassword = firstChar + rest.join('');
-
-        // Add today's date (2 digits)
+        password = first + rest.join('');
         const today = new Date();
         const day = today.getDate().toString().padStart(2, '0');
-        const finalPassword = shuffledPassword + day;
-        
-        return finalPassword;
+        password += day;
+        return password;
     }
 
+    let currentPassword = '';
     function updatePassword() {
-        const newPass = generateSecurePassword();
-        passwordDisplay.textContent = newPass;
-        passwordDisplay.style.transform = 'scale(0.98)';
-        setTimeout(() => passwordDisplay.style.transform = 'scale(1)', 120);
+        currentPassword = generatePassword();
+        document.getElementById('passwordDisplay').textContent = currentPassword;
     }
 
-    // =============== NAME FUNCTION (only text, no numbers) ===============
+    function copyPassword() {
+        if (currentPassword && currentPassword !== '••••••••') {
+            navigator.clipboard.writeText(currentPassword);
+            const btn = document.getElementById('copyPassBtn');
+            const original = btn.textContent;
+            btn.textContent = '✅ কপি!';
+            setTimeout(() => btn.textContent = original, 1000);
+        }
+    }
+
+    // ======================== নাম জেনারেটর (শুধু নাম, কোন সংখ্যা নেই) ========================
+    const namesList = [
+        "Aisha Rahman", "Fatima Akter", "Mariam Khan", "Layla Hasan", "Noor Islam", "Zara Chowdhury", "Sara Hossain", "Nadia Islam", "Rania Begum", "Yasmin Ali",
+        "Sophia Johnson", "Olivia Williams", "Emma Brown", "Isabella Jones", "Mia Garcia", "Amelia Miller", "Harper Davis", "Evelyn Rodriguez", "Abigail Martinez", "Emily Hernandez",
+        "Zara Ahmed", "Leila Haque", "Maya Sultana", "Ivy Karim", "Eva Begum", "Luna Shah", "Nina Ali", "Sofia Uddin", "Chloe Khan", "Lily Hasan",
+        "Sarah Johnson", "Laura Williams", "Emma Jones", "Olivia Brown", "Ava Davis", "Isabella Miller", "Sophia Wilson", "Mia Moore", "Charlotte Taylor", "Amelia Anderson",
+        "Harper Thomas", "Evelyn Jackson", "Abigail White", "Emily Harris", "Elizabeth Martin", "Sofia Thompson", "Aurora Garcia", "Grace Martinez", "Chloe Robinson", "Victoria Clark",
+        "Penelope Rodriguez", "Riley Lewis", "Layla Lee", "Luna Walker", "Zoe Hall", "Nora Allen", "Lily Young", "Eleanor King", "Hannah Wright", "Lillian Scott",
+        "Addison Green", "Aubrey Baker", "Ellie Adams", "Stella Nelson", "Natalie Carter", "Zara Mitchell", "Mila Perez", "Leah Roberts", "Lucy Turner", "Anna Phillips",
+        "Samantha Campbell", "Carolina Parker", "Camila Evans", "Gianna Edwards", "Julia Collins", "Valentina Stewart", "Alina Sanchez", "Diana Morris", "Elena Rogers", "Irina Reed",
+        "Maria Cook", "Olga Morgan", "Svetlana Bell", "Anastasia Murphy", "Tatiana Bailey", "Nadia Rivera", "Vera Cooper", "Galina Richardson", "Larisa Cox", "Polina Howard",
+        "Daria Ward", "Yulia Torres", "Ksenia Peterson", "Alisa Gray", "Eva Ramirez", "Viktoria James", "Margarita Watson", "Oksana Brooks", "Yana Kelly", "Mila Sanders",
+        "Alina Price", "Kamila Bennett", "Sofiya Wood", "Veronika Barnes", "Arina Ross", "Ekaterina Henderson", "Elizaveta Coleman", "Anna Jenkins", "Olga Perry", "Tatiana Powell",
+        "Amina Khan", "Khadija Begum", "Zaynab Ali", "Rukhsar Ahmed", "Sumaiya Hossain", "Meherun Nesa", "Taslima Akter", "Shamima Sultana", "Nasrin Jahan", "Farzana Islam",
+        "Sharmin Akter", "Moushumi Rahman", "Papia Chowdhury", "Roksana Karim", "Shamoli Hasan", "Tania Begum", "Ummey Kulsum", "Wahida Akter", "Yasmin Nahar", "Zakia Sultana"
+    ];
+
+    let currentName = '';
     function updateRandomName() {
-        const randomIndex = Math.floor(Math.random() * FINAL_NAMES.length);
-        nameDisplay.textContent = FINAL_NAMES[randomIndex];
-        nameDisplay.style.transform = 'scale(0.98)';
-        setTimeout(() => nameDisplay.style.transform = 'scale(1)', 120);
+        const randomIndex = Math.floor(Math.random() * namesList.length);
+        currentName = namesList[randomIndex];
+        document.getElementById('nameDisplay').textContent = currentName;
     }
 
-    // =============== COPY HANDLERS ===============
-    async function copyText(text, buttonElement) {
-        if (!text || text === '------') return;
-        try {
-            await navigator.clipboard.writeText(text);
-            const originalText = buttonElement.textContent;
-            buttonElement.textContent = '✅ Copied!';
-            setTimeout(() => {
-                buttonElement.textContent = originalText;
-            }, 1000);
-        } catch(e) {
-            alert("Press Ctrl+C to copy");
+    function copyName() {
+        if (currentName && currentName !== 'নাম দেখাবে') {
+            navigator.clipboard.writeText(currentName);
+            const btn = document.getElementById('copyNameBtn');
+            const original = btn.textContent;
+            btn.textContent = '✅ কপি!';
+            setTimeout(() => btn.textContent = original, 1000);
         }
     }
 
-    copyPassBtn.addEventListener('click', () => {
-        copyText(passwordDisplay.textContent, copyPassBtn);
-    });
-    copyNameBtn.addEventListener('click', () => {
-        copyText(nameDisplay.textContent, copyNameBtn);
-    });
-    genPassBtn.addEventListener('click', () => {
-        updatePassword();
-    });
-    genNameBtn.addEventListener('click', () => {
-        updateRandomName();
-    });
+    // ======================== ইভেন্ট লিসেনার ========================
+    document.getElementById('changePassBtn').addEventListener('click', updatePassword);
+    document.getElementById('copyPassBtn').addEventListener('click', copyPassword);
+    document.getElementById('changeNameBtn').addEventListener('click', updateRandomName);
+    document.getElementById('copyNameBtn').addEventListener('click', copyName);
 
-    // =============== AUTO DAILY RESET AT 11 PM ===============
-    function setupDailyPasswordReset() {
-        updatePassword(); // immediate
-        const now = new Date();
-        let target = new Date();
-        target.setHours(23, 0, 0, 0);
-        if (now >= target) {
-            target.setDate(target.getDate() + 1);
-        }
-        const msTill11PM = target - now;
-        setTimeout(() => {
-            updatePassword();
-            setInterval(updatePassword, 24 * 60 * 60 * 1000);
-        }, msTill11PM);
-    }
-
-    // =============== DATE TIME UPDATE ===============
+    // ======================== ডেট-টাইম ========================
     function updateDateTime() {
         const now = new Date();
-        const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit' };
-        document.getElementById('datetime').textContent = now.toLocaleDateString('en-US', options);
+        document.getElementById('datetime').innerText = now.toLocaleString('bn-BD');
     }
     setInterval(updateDateTime, 1000);
     updateDateTime();
 
-    // =============== INIT ===============
+    // শুরুতে রান
+    updatePassword();
     updateRandomName();
-    setupDailyPasswordReset();
+
+    console.log("✅ Ready | 2FA auto on paste | কপি(বাম) + চেঞ্জ(ডান)");
 </script>
 </body>
 </html>
