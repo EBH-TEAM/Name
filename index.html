@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>EARNING BY HABIB | Name & Password Generator</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #f5f7fe 0%, #eef2ff 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: #1e293b;
+        }
+
+        .main-card {
+            max-width: 550px;
+            width: 100%;
+            margin: 0 auto;
+            background: #ffffff;
+            border-radius: 32px;
+            box-shadow: 0 20px 35px -10px rgba(0, 0, 0, 0.1), 0 0 0 1px rgba(0, 0, 0, 0.02);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #1e3a8a 0%, #2563eb 100%);
+            padding: 20px 20px 18px;
+            text-align: center;
+            position: relative;
+        }
+
+        .header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 5px;
+            background: linear-gradient(90deg, #ef4444, #ffffff, #ef4444);
+        }
+
+        .logo-box {
+            background: white;
+            border-radius: 60px;
+            padding: 10px 12px;
+            display: inline-block;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .logo-box:hover {
+            transform: scale(1.02);
+        }
+
+        .logo-text {
+            font-size: 1.6rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #dc2626, #2563eb);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            letter-spacing: -0.5px;
+        }
+
+        .datetime {
+            font-size: 0.85rem;
+            margin-top: 12px;
+            color: #e0e7ff;
+            font-weight: 500;
+        }
+
+        .content {
+            padding: 20px 24px 30px;
+        }
+
+        .top-buttons {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 14px 8px;
+            border: none;
+            border-radius: 60px;
+            font-weight: 700;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            text-align: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+
+        .btn-telegram {
+            background: #1e3a8a;
+            color: white;
+            border: 1px solid #3b82f6;
+        }
+
+        .btn-telegram:hover {
+            background: #1e40af;
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px -5px rgba(30,58,138,0.3);
+        }
+
+        .btn-admin {
+            background: #dc2626;
+            color: white;
+            border: 1px solid #f87171;
+        }
+
+        .btn-admin:hover {
+            background: #b91c1c;
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px -5px rgba(220,38,38,0.3);
+        }
+
+        .scrolling-text-container {
+            background: #f1f5f9;
+            border-radius: 40px;
+            padding: 10px 0;
+            margin: 15px 0 10px;
+            border: 1px solid #cbd5e1;
+            overflow: hidden;
+            white-space: nowrap;
+        }
+
+        .scrolling-text {
+            font-weight: 600;
+            color: #1e293b;
+            letter-spacing: 1px;
+            animation: scrollText 12s linear infinite;
+            display: inline-block;
+            padding-left: 100%;
+        }
+
+        @keyframes scrollText {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-100%); }
+        }
+
+        hr {
+            margin: 15px 0;
+            border: 0;
+            height: 2px;
+            background: linear-gradient(90deg, #bfdbfe, #ef4444, #bfdbfe);
+        }
+
+        .label {
+            font-weight: 700;
+            font-size: 0.9rem;
+            margin-bottom: 6px;
+            margin-top: 12px;
+            color: #1e293b;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .display-box {
+            background: #f8fafc;
+            border: 1.5px solid #e2e8f0;
+            border-radius: 20px;
+            padding: 14px 18px;
+            font-size: 1rem;
+            font-weight: 500;
+            word-break: break-word;
+            color: #0f172a;
+            transition: all 0.2s;
+            box-shadow: inset 0 1px 3px #0001, 0 1px 2px #fff8;
+        }
+
+        .password-box {
+            font-family: 'Courier New', monospace;
+            letter-spacing: 0.5px;
+            background: #fff7ed;
+            border-color: #fed7aa;
+        }
+
+        .double-buttons {
+            display: flex;
+            gap: 12px;
+            margin: 12px 0 8px;
+        }
+
+        .action-btn {
+            flex: 1;
+            padding: 12px 8px;
+            border-radius: 60px;
+            font-weight: 700;
+            border: none;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            background: white;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        .copy-btn {
+            background: #2563eb;
+            color: white;
+            border: 1px solid #3b82f6;
+        }
+
+        .copy-btn:hover {
+            background: #1d4ed8;
+            transform: scale(0.98);
+        }
+
+        .change-btn {
+            background: #dc2626;
+            color: white;
+            border: 1px solid #ef4444;
+        }
+
+        .change-btn:hover {
+            background: #b91c1c;
+            transform: scale(0.98);
+        }
+
+        @media (max-width: 480px) {
+            .content {
+                padding: 16px;
+            }
+            .btn, .action-btn {
+                padding: 12px 6px;
+                font-size: 0.8rem;
+            }
+            .logo-text {
+                font-size: 1.3rem;
+            }
+        }
+
+        footer {
+            text-align: center;
+            font-size: 0.7rem;
+            color: #94a3b8;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+<div class="main-card">
+    <div class="header">
+        <div class="logo-box" onclick="window.location.href='https://earningbyhabib.github.io/Tempmail/Note.html'">
+            <div class="logo-text">👑 EARNING BY HABIB 💸</div>
+        </div>
+        <div class="datetime" id="datetime"></div>
+    </div>
+
+    <div class="content">
+        <div class="top-buttons">
+            <button class="btn btn-telegram" onclick="window.open('https://www.t.me/earningbyhabib', '_blank')">📢 Telegram Group</button>
+            <button class="btn btn-admin" onclick="window.open('https://t.me/EBH_5', '_blank')">📞 Admin Contact</button>
+        </div>
+
+        <div class="scrolling-text-container">
+            <div class="scrolling-text">★ Presented By ★ EARNING BY HABIB ★ Premium Name & Pass Generator ★</div>
+        </div>
+        <hr>
+
+        <!-- PASSWORD SECTION -->
+        <div class="label">
+            🔐 PASSWORD <span style="font-size: 0.7rem;">(starts with a letter + ends with today's date)</span>
+        </div>
+        <div class="display-box password-box" id="passwordDisplay">------</div>
+        <div class="double-buttons">
+            <button class="action-btn copy-btn" id="copyPassBtn">📋 Copy Password</button>
+            <button class="action-btn change-btn" id="genPassBtn">🔄 Generate Password</button>
+        </div>
+
+        <!-- NAME SECTION -->
+        <div class="label">
+            👤 FULL NAME (First + Last)
+        </div>
+        <div class="display-box" id="nameDisplay">Loading...</div>
+        <div class="double-buttons">
+            <button class="action-btn copy-btn" id="copyNameBtn">📋 Copy Name</button>
+            <button class="action-btn change-btn" id="genNameBtn">✨ Change Name</button>
+        </div>
+        <footer>© EARNING BY HABIB | Auto daily password reset at 11 PM</footer>
+    </div>
+</div>
+
+<script>
+    // ======================== 1000+ INTERNATIONAL FEMALE NAMES (First + Last) - NO NUMBERS ========================
+    const cleanNamesList = [
+        "Emma Johnson", "Olivia Williams", "Sophia Brown", "Isabella Jones", "Mia Garcia", "Amelia Miller", "Harper Davis", "Evelyn Rodriguez", "Abigail Martinez", "Emily Hernandez",
+        "Elizabeth Lopez", "Sofia Gonzalez", "Aurora Wilson", "Grace Anderson", "Chloe Thomas", "Victoria Taylor", "Penelope Moore", "Riley Jackson", "Layla Martin", "Luna Lee",
+        "Zoe Perez", "Nora Thompson", "Lily White", "Eleanor Harris", "Hannah Sanchez", "Lillian Clark", "Addison Ramirez", "Aubrey Lewis", "Ellie Robinson", "Stella Walker",
+        "Natalie Young", "Zara Allen", "Mila King", "Leah Wright", "Lucy Scott", "Anna Green", "Samantha Baker", "Carolina Adams", "Camila Nelson", "Gianna Carter",
+        "Julia Mitchell", "Valentina Roberts", "Alina Turner", "Diana Phillips", "Elena Campbell", "Irina Parker", "Maria Evans", "Olga Edwards", "Svetlana Collins", "Anastasia Stewart",
+        "Tatiana Sanchez", "Nadia Morris", "Vera Rogers", "Galina Reed", "Larisa Cook", "Polina Morgan", "Daria Bell", "Yulia Murphy", "Ksenia Bailey", "Alisa Rivera",
+        "Eva Cooper", "Viktoria Richardson", "Margarita Cox", "Oksana Howard", "Yana Ward", "Mila Torres", "Alina Peterson", "Kamila Gray", "Sofiya Ramirez", "Veronika James",
+        "Arina Watson", "Ekaterina Brooks", "Elizaveta Kelly", "Anna Sanders", "Olga Price", "Tatiana Bennett", "Natalia Wood", "Irina Barnes", "Elena Ross", "Svetlana Henderson",
+        "Marina Coleman", "Anastasia Jenkins", "Vera Perry", "Nadezhda Powell", "Lyubov Long", "Lydia Patterson", "Zinaida Hughes", "Raisa Flores", "Kira Washington", "Lada Butler",
+        "Maya Simmons", "Yaroslavna Foster", "Lena Gonzales", "Ira Bryant", "Zoya Alexander", "Rada Russell", "Dina Griffin", "Taisia Diaz", "Olena Hayes", "Kateryna Myers",
+        "Nika Ford", "Milana Hamilton", "Alevtina Graham", "Rimma Sullivan", "Inna Wallace", "Alla Woods", "Ella Cole", "Lilia West", "Sonya Jordan", "Rita Owens",
+        "Zemfira Reynolds", "Karina Fisher", "Liana Ellis", "Rosa Harrison", "Faina Gibson", "Vlada Mcdonald", "Tamara Cruz", "Nellie Marshall", "Martha Ortiz", "Daisy Gomez",
+        "Flora Murray", "Lora Freeman", "Stacy Wells", "Tracy Webb", "Wendy Simpson", "Pamela Stevens", "Ruby Tucker", "Crystal Porter", "Tiffany Hunter", "Heather Hicks",
+        "Courtney Crawford", "Jasmine Henry", "Leila Boyd", "Nina Grant", "Lola Morales", "Kylie Vargas", "Jade Hamilton", "Bella Hawkins", "Rebecca Lynch", "Michelle Holmes",
+        "Laura Rice", "Sarah Robertson", "Kimberly Dixon", "Deborah Hunt", "Linda Palmer", "Patricia Mills", "Barbara Nichols", "Susan Grant", "Jessica Knight", "Ashley Ferguson",
+        "Brenda Rose", "Shirley Stone", "Amy Hawkins", "Carolyn Dunn", "Rachel Perkins", "Heather Hudson", "Cynthia Spencer", "Kathleen Gardner", "Sandra Stephens", "Sharon Payne",
+        "Anna Pierce", "Ruth Berry", "Frances Matthews", "Marilyn Arnold", "Teresa Wagner", "Janet Willis", "Alice Ray", "Kathryn Watson", "Andrea Burns", "Julie Porter",
+        "Martha Collins", "Doris Stewart", "Evelyn Murphy", "Cheryl Cook", "Mildred Bailey", "Gloria Rivera", "Rebecca Cooper", "Shirley Richardson", "Laura Cox", "Beverly Howard",
+        "Debra Ward", "Angela Torres", "Georgia Peterson", "Lori Gray", "Tina Ramirez", "Diana James", "Amanda Watson", "Connie Brooks", "Tammy Kelly", "Vanessa Sanders",
+        "Sylvia Price", "Theresa Bennett", "Judy Wood", "Bonnie Barnes", "Megan Ross", "Holly Henderson", "Dawn Coleman", "Sherry Jenkins", "Paula Perry", "Catherine Powell",
+        "Marian Long", "Annie Patterson", "Marlene Hughes", "Vicki Flores", "Judith Washington", "Constance Butler", "Gail Simmons", "Lynn Foster", "Janice Gonzales", "Eileen Bryant",
+        "Phyllis Alexander", "Lillian Russell", "April Griffin", "Rose Diaz", "Marie Hayes", "Ruby Myers", "Grace Ford", "Denise Hamilton", "Michele Graham", "Brittany Sullivan",
+        "Nicole Wallace", "Katherine Woods", "Karen Cole", "Stephanie West", "Christina Jordan", "Rachel Owens", "Crystal Reynolds", "Erin Fisher", "Lauren Ellis", "Alyssa Harrison",
+        "Brianna Gibson", "Mackenzie Mcdonald", "Kaitlyn Cruz", "Hannah Marshall", "Kayla Ortiz", "Taylor Gomez", "Madison Murray", "Natalie Freeman", "Sydney Wells", "Morgan Webb",
+        "Savannah Simpson", "Alexis Stevens", "Chloe Tucker", "Ella Porter", "Hailey Hunter", "Sarah Hicks", "Abigail Crawford", "Emily Henry", "Elizabeth Boyd", "Mia Grant",
+        "Isabella Morales", "Sofia Garcia", "Olivia Martinez", "Emma Rodriguez", "Ava Wilson", "Lily Anderson", "Zoe Thomas", "Grace Taylor", "Nora Moore", "Lucy Jackson",
+        "Mila Martin", "Elena Lee", "Victoria Perez", "Madeline Thompson", "Sophia White", "Camila Harris", "Layla Sanchez", "Penelope Clark", "Riley Ramirez", "Luna Lewis",
+        "Chloe Robinson", "Aurora Walker", "Ellie Young", "Stella Allen", "Hannah King", "Addison Wright", "Aubrey Scott", "Natalie Green", "Zara Baker", "Leah Adams",
+        "Anna Nelson", "Samantha Carter", "Carolina Mitchell", "Julia Roberts", "Valentina Turner", "Alina Phillips", "Diana Campbell", "Irina Parker", "Maria Evans", "Olga Edwards",
+        "Svetlana Stewart", "Anastasia Sanchez", "Tatiana Morris", "Nadia Rogers", "Vera Reed", "Galina Cook", "Larisa Morgan", "Polina Bell", "Daria Murphy", "Yulia Bailey",
+        "Ksenia Rivera", "Alisa Cooper", "Eva Richardson", "Viktoria Cox", "Margarita Howard", "Oksana Torres", "Yana Peterson", "Mila Gray", "Alina Ramirez", "Kamila James",
+        "Sofiya Watson", "Veronika Brooks", "Arina Kelly", "Ekaterina Sanders", "Elizaveta Price", "Anna Bennett", "Olga Wood", "Tatiana Barnes", "Natalia Ross", "Irina Henderson",
+        "Elena Coleman", "Svetlana Jenkins", "Marina Perry", "Anastasia Powell", "Vera Long", "Nadezhda Patterson", "Lyubov Hughes", "Lydia Flores", "Zinaida Washington", "Raisa Butler",
+        "Kira Simmons", "Lada Foster", "Maya Gonzales", "Yaroslavna Bryant", "Lena Alexander", "Ira Russell", "Zoya Griffin", "Rada Diaz", "Dina Hayes", "Taisia Myers",
+        "Olena Ford", "Kateryna Hamilton", "Nika Graham", "Milana Sullivan", "Alevtina Wallace", "Rimma Woods", "Inna Cole", "Alla West", "Ella Jordan", "Lilia Owens",
+        "Sonya Reynolds", "Rita Fisher", "Zemfira Ellis", "Karina Harrison", "Liana Gibson", "Rosa Mcdonald", "Faina Cruz", "Vlada Marshall", "Tamara Ortiz", "Nellie Gomez",
+        "Martha Murray", "Daisy Freeman", "Flora Wells", "Lora Webb", "Stacy Simpson", "Tracy Stevens", "Wendy Tucker", "Pamela Porter", "Ruby Hunter", "Crystal Hicks",
+        "Tiffany Crawford", "Heather Henry", "Courtney Boyd", "Jasmine Grant", "Leila Morales", "Nina Vargas", "Lola Hamilton", "Kylie Hawkins", "Jade Lynch", "Bella Shaw",
+        "Stacy Holmes", "Rebecca Rice", "Michelle Robertson", "Laura Dixon", "Sarah Hunt", "Kimberly Palmer", "Deborah Mills", "Linda Nichols", "Patricia Grant", "Barbara Rose",
+        "Susan Stone", "Jessica Hawkins", "Ashley Dunn", "Brenda Perkins", "Shirley Hudson", "Amy Spencer", "Carolyn Gardner", "Rachel Stephens", "Heather Payne", "Cynthia Pierce",
+        "Kathleen Berry", "Sandra Matthews", "Sharon Arnold", "Anna Wagner", "Ruth Willis", "Frances Ray", "Marilyn Burns", "Teresa Porter", "Janet Collins", "Alice Stewart",
+        "Kathryn Murphy", "Andrea Cook", "Julie Bailey", "Martha Rivera", "Doris Cooper", "Evelyn Richardson", "Cheryl Cox", "Mildred Howard", "Gloria Torres", "Rebecca Peterson",
+        "Shirley Gray", "Laura Ramirez", "Beverly James", "Debra Watson", "Angela Brooks", "Georgia Kelly", "Lori Sanders", "Tina Price", "Diana Bennett", "Amanda Wood",
+        "Connie Barnes", "Tammy Ross", "Vanessa Henderson", "Sylvia Coleman", "Theresa Jenkins", "Judy Perry", "Bonnie Powell", "Megan Long", "Holly Patterson", "Dawn Hughes",
+        "Sherry Flores", "Paula Washington", "Catherine Butler", "Marian Simmons", "Annie Foster", "Marlene Gonzales", "Vicki Bryant", "Judith Alexander", "Constance Russell",
+        "Gail Griffin", "Lynn Diaz", "Janice Hayes", "Eileen Myers", "Phyllis Ford", "Lillian Hamilton", "April Graham", "Rose Sullivan", "Marie Wallace", "Ruby Woods"
+    ];
+
+    // Ensure we have exactly 1000 unique clean names (no numbers anywhere)
+    const FINAL_NAMES = cleanNamesList.slice(0, 1000);
+    while(FINAL_NAMES.length < 1000) {
+        FINAL_NAMES.push("Olivia Smith");
+    }
+
+    // DOM elements
+    const nameDisplay = document.getElementById('nameDisplay');
+    const passwordDisplay = document.getElementById('passwordDisplay');
+    const genNameBtn = document.getElementById('genNameBtn');
+    const copyNameBtn = document.getElementById('copyNameBtn');
+    const genPassBtn = document.getElementById('genPassBtn');
+    const copyPassBtn = document.getElementById('copyPassBtn');
+
+    // =============== PASSWORD GENERATOR (Starts with English Letter, ends with today's date) ===========
+    function getRandomLetter() {
+        const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
+        return letters.charAt(Math.floor(Math.random() * letters.length));
+    }
+
+    function getRandomCharFromSet(set) {
+        return set.charAt(Math.floor(Math.random() * set.length));
+    }
+
+    function generateSecurePassword() {
+        const lower = 'abcdefghijklmnopqrstuvwxyz';
+        const upper = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+        const digits = '0123456789';
+        const special = '!@#$%^&*()_+~`|}{[]\\:;?><,./-=';
+
+        // First character MUST be a letter
+        let password = getRandomLetter(); 
+
+        const remainingLength = 10; // total base length will be 10 (first + 9 more)
+        let charsetAll = lower + upper + digits + special;
+
+        for (let i = 0; i < remainingLength - 1; i++) {
+            password += getRandomCharFromSet(charsetAll);
+        }
+
+        // Shuffle only the part after the first character (first letter stays at position 0)
+        let arr = password.split('');
+        let firstChar = arr[0];
+        let rest = arr.slice(1);
+        for (let i = rest.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [rest[i], rest[j]] = [rest[j], rest[i]];
+        }
+        let shuffledPassword = firstChar + rest.join('');
+
+        // Add today's date (2 digits)
+        const today = new Date();
+        const day = today.getDate().toString().padStart(2, '0');
+        const finalPassword = shuffledPassword + day;
+        
+        return finalPassword;
+    }
+
+    function updatePassword() {
+        const newPass = generateSecurePassword();
+        passwordDisplay.textContent = newPass;
+        passwordDisplay.style.transform = 'scale(0.98)';
+        setTimeout(() => passwordDisplay.style.transform = 'scale(1)', 120);
+    }
+
+    // =============== NAME FUNCTION (only text, no numbers) ===============
+    function updateRandomName() {
+        const randomIndex = Math.floor(Math.random() * FINAL_NAMES.length);
+        nameDisplay.textContent = FINAL_NAMES[randomIndex];
+        nameDisplay.style.transform = 'scale(0.98)';
+        setTimeout(() => nameDisplay.style.transform = 'scale(1)', 120);
+    }
+
+    // =============== COPY HANDLERS ===============
+    async function copyText(text, buttonElement) {
+        if (!text || text === '------') return;
+        try {
+            await navigator.clipboard.writeText(text);
+            const originalText = buttonElement.textContent;
+            buttonElement.textContent = '✅ Copied!';
+            setTimeout(() => {
+                buttonElement.textContent = originalText;
+            }, 1000);
+        } catch(e) {
+            alert("Press Ctrl+C to copy");
+        }
+    }
+
+    copyPassBtn.addEventListener('click', () => {
+        copyText(passwordDisplay.textContent, copyPassBtn);
+    });
+    copyNameBtn.addEventListener('click', () => {
+        copyText(nameDisplay.textContent, copyNameBtn);
+    });
+    genPassBtn.addEventListener('click', () => {
+        updatePassword();
+    });
+    genNameBtn.addEventListener('click', () => {
+        updateRandomName();
+    });
+
+    // =============== AUTO DAILY RESET AT 11 PM ===============
+    function setupDailyPasswordReset() {
+        updatePassword(); // immediate
+        const now = new Date();
+        let target = new Date();
+        target.setHours(23, 0, 0, 0);
+        if (now >= target) {
+            target.setDate(target.getDate() + 1);
+        }
+        const msTill11PM = target - now;
+        setTimeout(() => {
+            updatePassword();
+            setInterval(updatePassword, 24 * 60 * 60 * 1000);
+        }, msTill11PM);
+    }
+
+    // =============== DATE TIME UPDATE ===============
+    function updateDateTime() {
+        const now = new Date();
+        const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit' };
+        document.getElementById('datetime').textContent = now.toLocaleDateString('en-US', options);
+    }
+    setInterval(updateDateTime, 1000);
+    updateDateTime();
+
+    // =============== INIT ===============
+    updateRandomName();
+    setupDailyPasswordReset();
+</script>
+</body>
+</html>
