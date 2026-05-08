@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>EBH Toolkit | 2FA + Password + Name</title>
+    <title>EBH Toolkit | 2FA + Password + Dynamic Name</title>
     <style>
         * {
             margin: 0;
@@ -130,7 +130,6 @@
         .btn-copy {
             background: #2563eb;
             color: white;
-            order: 1;
         }
 
         .btn-copy:hover {
@@ -141,7 +140,6 @@
         .btn-change {
             background: #dc2626;
             color: white;
-            order: 2;
         }
 
         .btn-change:hover {
@@ -149,7 +147,12 @@
             transform: scale(0.97);
         }
 
-        /* 2FA Specific */
+        /* 2FA specific */
+        .fa-input-wrapper {
+            position: relative;
+            width: 100%;
+            margin: 10px 0;
+        }
         .fa-input {
             width: 100%;
             padding: 16px;
@@ -160,16 +163,36 @@
             font-family: monospace;
             font-size: 1rem;
             text-align: center;
-            margin: 10px 0;
-            box-shadow: 0 0 0 1px rgba(59,130,246,0.2);
+            padding-right: 60px;
+            transition: 0.2s;
         }
-
         .fa-input:focus {
             outline: none;
             border-color: #dc2626;
             box-shadow: 0 0 0 2px rgba(220,38,38,0.1);
         }
-
+        /* পেস্ট বাটন (ইনপুট বক্সের নিচে ছোট বাটন) */
+        .paste-otp-btn {
+            background: #059669;
+            color: white;
+            border: none;
+            padding: 8px 14px;
+            border-radius: 40px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.2s;
+            margin-top: 8px;
+            width: auto;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        .paste-otp-btn:active {
+            transform: scale(0.96);
+            background: #047857;
+        }
         .otp-code {
             font-size: 1.5rem;
             font-weight: 800;
@@ -182,7 +205,6 @@
             border-radius: 16px;
             font-family: monospace;
         }
-
         .timer-bar {
             height: 4px;
             background: #2563eb;
@@ -190,12 +212,10 @@
             width: 100%;
             transition: width 0.3s linear;
         }
-
         .label-text {
             font-size: 0.7rem;
             color: #64748b;
         }
-
         .flex-between {
             display: flex;
             justify-content: space-between;
@@ -203,36 +223,33 @@
             flex-wrap: wrap;
             gap: 10px;
         }
-
-        .clear-btn-small {
-            background: #ef4444;
-            color: white;
-            border: none;
-            padding: 6px 16px;
-            border-radius: 40px;
-            font-size: 0.7rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: 0.2s;
-        }
-
-        .clear-btn-small:hover {
-            background: #dc2626;
-            transform: scale(0.97);
-        }
-
         hr {
             margin: 15px 0;
             border: 0;
             height: 1px;
             background: linear-gradient(90deg, transparent, #cbd5e1, transparent);
         }
-
         footer {
             text-align: center;
             font-size: 0.65rem;
             color: #94a3b8;
             margin-top: 15px;
+        }
+        .toast-msg {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #1e293b;
+            color: white;
+            padding: 6px 16px;
+            border-radius: 40px;
+            font-size: 12px;
+            z-index: 2000;
+            opacity: 0;
+            transition: 0.2s;
+            pointer-events: none;
+            white-space: nowrap;
         }
     </style>
 </head>
@@ -245,29 +262,32 @@
         <div class="datetime" id="datetime"></div>
     </div>
 
-    <!-- কার্ড ১: 2FA -->
+    <!-- কার্ড ১: 2FA (ক্লিয়ার বাটন সরানো হয়েছে, পেস্ট বাটন & অটো ক্লিয়ার) -->
     <div class="card card-2fa">
         <div class="card-header">
             <span class="icon">📱</span>
             <h3>লাইভ ২FA কোড (OTP)</h3>
         </div>
-        <input type="text" class="fa-input" id="twofaKey" placeholder="এখানে আপনার Base32 সিক্রেট কী পেস্ট করুন" autocomplete="off">
+        <div class="fa-input-wrapper">
+            <input type="text" class="fa-input" id="twofaKey" placeholder="Base32 সিক্রেট কী দিন (পেস্ট করুন বা লিখুন)" autocomplete="off">
+        </div>
+        <!-- পেস্ট বাটন : এটাই ক্লিক করলে ক্লিপবোর্ড থেকে পেস্ট হবে এবং 2 সেকেন্ড পর ইনপুট ক্লিয়ার -->
+        <button class="paste-otp-btn" id="pasteOtpBtn">📋 পেস্ট করুন (OTP)</button>
         <div class="otp-code" id="otpDisplay">------</div>
         <div class="timer-bar" id="timerBar"></div>
         <div class="flex-between" style="margin-top: 12px;">
-            <span class="label-text">✅ পেস্ট করলেই অটো জেনারেট & কপি</span>
-            <button class="clear-btn-small" id="clear2faBtn">🗑️ ক্লিয়ার</button>
+            <span class="label-text">✅ পেস্ট করার পর ২ সেকেন্ডে ইনপুট ক্লিয়ার হবে | OTP অটো কপি</span>
         </div>
     </div>
 
-    <!-- কার্ড ২: পাসওয়ার্ড + নাম -->
+    <!-- কার্ড ২: পাসওয়ার্ড + নাম (নাম মাঝখান থেকে রেন্ডম কিন্তু রিফ্রেশে চেঞ্জ হবে না) -->
     <div class="card card-passname">
         <div class="card-header">
             <span class="icon">🔑👤</span>
             <h3>পাসওয়ার্ড + রেন্ডম নাম</h3>
         </div>
         
-        <!-- পাসওয়ার্ড সেকশন -->
+        <!-- পাসওয়ার্ড সেকশন (সাধারণ র্যান্ডম, রিফ্রেশে পরিবর্তন হয়) -->
         <div class="label-text" style="margin-bottom: 5px;">🔐 পাসওয়ার্ড</div>
         <div class="display-box password-box" id="passwordDisplay">••••••••</div>
         <div class="btn-group">
@@ -275,215 +295,291 @@
             <button class="btn btn-change" id="changePassBtn">🔄 চেঞ্জ</button>
         </div>
         
-        <!-- নাম সেকশন -->
-        <div class="label-text" style="margin: 15px 0 5px 0;">👤 র্যান্ডম নাম</div>
+        <!-- নাম সেকশন: মাঝখান থেকে রেন্ডম (প্রশস্ত লিস্ট), রিফ্রেশে একই থাকে (স্থায়ী) -->
+        <div class="label-text" style="margin: 15px 0 5px 0;">👤 র্যান্ডম নাম (স্থায়ী)</div>
         <div class="display-box name-box" id="nameDisplay">নাম দেখাবে</div>
         <div class="btn-group">
             <button class="btn btn-copy" id="copyNameBtn">📋 কপি</button>
-            <button class="btn btn-change" id="changeNameBtn">🔄 চেঞ্জ</button>
+            <button class="btn btn-change" id="changeNameBtn">🔄 চেঞ্জ (নতুন রেন্ডম)</button>
         </div>
     </div>
 
     <footer>© EARNING BY HABIB</footer>
 </div>
+<div id="liveToast" class="toast-msg"></div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
 <script>
-    // ======================== 2FA TOTP সিস্টেম ========================
-    let currentSecret = '';
-    let timerInterval = null;
+    (function() {
+        // ======================== TOAST FUNCTION ========================
+        function showToast(msg) {
+            let toast = document.getElementById('liveToast');
+            toast.style.opacity = '1';
+            toast.innerText = msg;
+            setTimeout(() => toast.style.opacity = '0', 1800);
+        }
 
-    function base32Decode(base32) {
-        const alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ234567';
-        base32 = base32.replace(/\s+/g, '').replace(/=+$/, '').toUpperCase();
-        let bits = 0, value = 0, output = [];
-        for (let i = 0; i < base32.length; i++) {
-            const index = alphabet.indexOf(base32[i]);
-            if (index === -1) throw new Error('Invalid Base32');
-            value = (value << 5) | index;
-            bits += 5;
-            if (bits >= 8) {
-                output.push((value >>> (bits - 8)) & 0xFF);
-                bits -= 8;
+        // ======================== 2FA TOTP সিস্টেম (ক্লিয়ার বাটন নেই, শুধু পেস্ট + অটো ক্লিয়ার) ========================
+        let currentSecret = '';
+        let timerInterval = null;
+        let autoClearTimeout = null;
+
+        function base32Decode(base32) {
+            const alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ234567';
+            base32 = base32.replace(/\s+/g, '').replace(/=+$/, '').toUpperCase();
+            let bits = 0, value = 0, output = [];
+            for (let i = 0; i < base32.length; i++) {
+                const index = alphabet.indexOf(base32[i]);
+                if (index === -1) throw new Error('Invalid Base32');
+                value = (value << 5) | index;
+                bits += 5;
+                if (bits >= 8) {
+                    output.push((value >>> (bits - 8)) & 0xFF);
+                    bits -= 8;
+                }
+            }
+            return new Uint8Array(output);
+        }
+
+        function generateTOTP(secret) {
+            try {
+                const key = base32Decode(secret);
+                const keyWA = CryptoJS.lib.WordArray.create(key);
+                const counter = Math.floor(Date.now() / 1000 / 30);
+                const counterBytes = new ArrayBuffer(8);
+                const counterView = new DataView(counterBytes);
+                counterView.setUint32(4, counter);
+                const counterWA = CryptoJS.lib.WordArray.create(new Uint8Array(counterBytes));
+                const hmac = CryptoJS.HmacSHA1(counterWA, keyWA);
+                const hmacHex = hmac.toString(CryptoJS.enc.Hex);
+                const offset = parseInt(hmacHex.substr(39, 1), 16) * 2;
+                const otpHex = hmacHex.substr(offset, 8);
+                let otp = parseInt(otpHex, 16) & 0x7FFFFFFF;
+                otp = otp % 1000000;
+                return otp.toString().padStart(6, '0');
+            } catch(e) {
+                return 'ERROR';
             }
         }
-        return new Uint8Array(output);
-    }
 
-    function generateTOTP(secret) {
-        try {
-            const key = base32Decode(secret);
-            const keyWA = CryptoJS.lib.WordArray.create(key);
-            const counter = Math.floor(Date.now() / 1000 / 30);
-            const counterBytes = new ArrayBuffer(8);
-            const counterView = new DataView(counterBytes);
-            counterView.setUint32(4, counter);
-            const counterWA = CryptoJS.lib.WordArray.create(new Uint8Array(counterBytes));
-            const hmac = CryptoJS.HmacSHA1(counterWA, keyWA);
-            const hmacHex = hmac.toString(CryptoJS.enc.Hex);
-            const offset = parseInt(hmacHex.substr(39, 1), 16) * 2;
-            const otpHex = hmacHex.substr(offset, 8);
-            let otp = parseInt(otpHex, 16) & 0x7FFFFFFF;
-            otp = otp % 1000000;
-            return otp.toString().padStart(6, '0');
-        } catch(e) {
-            return 'ERROR';
+        function updateOtpDisplay() {
+            if (!currentSecret || currentSecret === '') {
+                document.getElementById('otpDisplay').textContent = '------';
+                return;
+            }
+            const code = generateTOTP(currentSecret);
+            if (code !== 'ERROR') {
+                document.getElementById('otpDisplay').textContent = code;
+                // অটো কপি (কার্ডে লেখা অনুযায়ী)
+                navigator.clipboard.writeText(code).catch(e => console.warn);
+                const otpEl = document.getElementById('otpDisplay');
+                otpEl.style.transform = 'scale(0.97)';
+                setTimeout(() => otpEl.style.transform = 'scale(1)', 120);
+            } else {
+                document.getElementById('otpDisplay').textContent = 'ERROR';
+            }
         }
-    }
 
-    function updateOtpDisplay() {
-        if (!currentSecret) {
-            document.getElementById('otpDisplay').textContent = '------';
-            return;
-        }
-        const code = generateTOTP(currentSecret);
-        document.getElementById('otpDisplay').textContent = code;
-        navigator.clipboard.writeText(code);
-        const otpEl = document.getElementById('otpDisplay');
-        otpEl.style.transform = 'scale(0.97)';
-        setTimeout(() => otpEl.style.transform = 'scale(1)', 120);
-    }
-
-    function startTimer() {
-        if (timerInterval) clearInterval(timerInterval);
-        function tick() {
-            if (!currentSecret) return;
-            const now = Math.floor(Date.now() / 1000);
-            const remaining = 30 - (now % 30);
-            const percent = (remaining / 30) * 100;
-            document.getElementById('timerBar').style.width = percent + '%';
-            if (remaining === 30 || remaining === 1) updateOtpDisplay();
-        }
-        tick();
-        timerInterval = setInterval(tick, 1000);
-    }
-
-    function init2FAFromInput() {
-        const secret = document.getElementById('twofaKey').value.trim();
-        if (secret === '') {
-            currentSecret = '';
-            document.getElementById('otpDisplay').textContent = '------';
-            document.getElementById('timerBar').style.width = '0%';
+        function startTimer() {
             if (timerInterval) clearInterval(timerInterval);
-            return;
+            function tick() {
+                if (!currentSecret) {
+                    document.getElementById('timerBar').style.width = '0%';
+                    return;
+                }
+                const now = Math.floor(Date.now() / 1000);
+                const remaining = 30 - (now % 30);
+                const percent = (remaining / 30) * 100;
+                document.getElementById('timerBar').style.width = percent + '%';
+                if (remaining === 30 || remaining === 29 || remaining === 1) updateOtpDisplay();
+            }
+            tick();
+            timerInterval = setInterval(tick, 1000);
         }
-        currentSecret = secret;
-        updateOtpDisplay();
+
+        // সিক্রেট সেট করার ফাংশন (ইনপুট ভ্যালু থেকে)
+        function setSecretFromInput(value) {
+            const trimmed = value.trim();
+            if (trimmed === '') {
+                currentSecret = '';
+                document.getElementById('otpDisplay').textContent = '------';
+                document.getElementById('timerBar').style.width = '0%';
+                return;
+            }
+            currentSecret = trimmed;
+            updateOtpDisplay();
+            startTimer();
+        }
+
+        // পেস্ট বাটনের কাজ: ক্লিপবোর্ড থেকে টেক্সট পড়ে ইনপুটে সেট করে, তারপর 2 সেকেন্ড পর ইনপুট ক্লিয়ার করে
+        async function pasteAndAutoClear() {
+            try {
+                const text = await navigator.clipboard.readText();
+                if (!text || text.trim() === '') {
+                    showToast("⚠️ ক্লিপবোর্ড খালি");
+                    return;
+                }
+                const inputField = document.getElementById('twofaKey');
+                inputField.value = text.trim();
+                // সিক্রেট সেট করুন
+                setSecretFromInput(text.trim());
+                showToast("🔑 OTP সিক্রেট পেস্ট করা হয়েছে, ২ সেকেন্ড পর ইনপুট ক্লিয়ার হবে");
+                
+                // আগের টাইমআউট ক্লিয়ার করে নতুন সেট
+                if (autoClearTimeout) clearTimeout(autoClearTimeout);
+                autoClearTimeout = setTimeout(() => {
+                    const inp = document.getElementById('twofaKey');
+                    if (inp) {
+                        inp.value = '';
+                        // কিন্তু currentSecret যেন রিসেট না হয়! শুধু ইনপুট বক্স খালি করবে, সিক্রেট থাকবে OTp চলতে থাকবে।
+                        // ব্যবহারকারী পরবর্তীতে নতুন পেস্ট করলে ওভাররাইট হবে। ঠিক আছে।
+                        showToast("🧹 ইনপুট বক্স ক্লিয়ার করা হয়েছে (সিক্রেট সক্রিয় আছে)");
+                    }
+                    autoClearTimeout = null;
+                }, 2000);
+            } catch(err) {
+                showToast("❌ ক্লিপবোর্ড পড়া যায়নি, অনুমতি দিন");
+            }
+        }
+
+        // ক্লাসিক্যাল ইনপুট ইভেন্ট হ্যান্ডলার (লিখলে বা ম্যানুয়ালি পেস্ট করলেও কাজ)
+        const twofaInput = document.getElementById('twofaKey');
+        twofaInput.addEventListener('input', (e) => {
+            if (autoClearTimeout) clearTimeout(autoClearTimeout);
+            setSecretFromInput(e.target.value);
+        });
+        
+        // পেস্ট বাটন ইভেন্ট যোগ
+        document.getElementById('pasteOtpBtn').addEventListener('click', pasteAndAutoClear);
+
+        // ======================== পাসওয়ার্ড জেনারেটর ========================
+        function getRandomLetter() {
+            const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
+            return letters.charAt(Math.floor(Math.random() * letters.length));
+        }
+        function getRandomChar(set) {
+            return set.charAt(Math.floor(Math.random() * set.length));
+        }
+        function generatePassword() {
+            const lower = 'abcdefghijklmnopqrstuvwxyz';
+            const upper = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+            const digits = '0123456789';
+            const special = '!@#$%^&*()_+~`|}{[]\\:;?><,./-=';
+            let password = getRandomLetter();
+            const allChars = lower + upper + digits + special;
+            for (let i = 0; i < 9; i++) password += getRandomChar(allChars);
+            let arr = password.split('');
+            let first = arr[0];
+            let rest = arr.slice(1);
+            for (let i = rest.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [rest[i], rest[j]] = [rest[j], rest[i]];
+            }
+            password = first + rest.join('');
+            const today = new Date();
+            const day = today.getDate().toString().padStart(2, '0');
+            password += day;
+            return password;
+        }
+
+        let currentPassword = '';
+        function updatePassword() {
+            currentPassword = generatePassword();
+            document.getElementById('passwordDisplay').textContent = currentPassword;
+        }
+
+        function copyPassword() {
+            if (currentPassword && currentPassword !== '••••••••') {
+                navigator.clipboard.writeText(currentPassword);
+                showToast("📋 পাসওয়ার্ড কপি হয়েছে");
+            }
+        }
+
+        // ======================== নাম জেনারেটর (স্থায়ী, রিফ্রেশে চেঞ্জ হবে না, কিন্তু চেঞ্জ বাটনে নতুন রেন্ডম নেবে) ========================
+        // বড় নামের ব্যাংক - মাঝখান থেকে রেন্ডম নির্বাচন হবে, সিরিয়াল ছাড়া
+        const FULL_NAMES_LIST = [
+            "Aisha Rahman", "Fatima Akter", "Mariam Khan", "Layla Hasan", "Noor Islam", "Zara Chowdhury", "Sara Hossain", "Nadia Islam", "Rania Begum", "Yasmin Ali",
+            "Sophia Johnson", "Olivia Williams", "Emma Brown", "Isabella Jones", "Mia Garcia", "Amelia Miller", "Harper Davis", "Evelyn Rodriguez", "Abigail Martinez", "Emily Hernandez",
+            "Zara Ahmed", "Leila Haque", "Maya Sultana", "Ivy Karim", "Eva Begum", "Luna Shah", "Nina Ali", "Sofia Uddin", "Chloe Khan", "Lily Hasan",
+            "Sarah Johnson", "Laura Williams", "Emma Jones", "Olivia Brown", "Ava Davis", "Isabella Miller", "Sophia Wilson", "Mia Moore", "Charlotte Taylor", "Amelia Anderson",
+            "Harper Thomas", "Evelyn Jackson", "Abigail White", "Emily Harris", "Elizabeth Martin", "Sofia Thompson", "Aurora Garcia", "Grace Martinez", "Chloe Robinson", "Victoria Clark",
+            "Penelope Rodriguez", "Riley Lewis", "Layla Lee", "Luna Walker", "Zoe Hall", "Nora Allen", "Lily Young", "Eleanor King", "Hannah Wright", "Lillian Scott",
+            "Addison Green", "Aubrey Baker", "Ellie Adams", "Stella Nelson", "Natalie Carter", "Zara Mitchell", "Mila Perez", "Leah Roberts", "Lucy Turner", "Anna Phillips",
+            "Samantha Campbell", "Carolina Parker", "Camila Evans", "Gianna Edwards", "Julia Collins", "Valentina Stewart", "Alina Sanchez", "Diana Morris", "Elena Rogers", "Irina Reed",
+            "Maria Cook", "Olga Morgan", "Svetlana Bell", "Anastasia Murphy", "Tatiana Bailey", "Nadia Rivera", "Vera Cooper", "Galina Richardson", "Larisa Cox", "Polina Howard",
+            "Daria Ward", "Yulia Torres", "Ksenia Peterson", "Alisa Gray", "Eva Ramirez", "Viktoria James", "Margarita Watson", "Oksana Brooks", "Yana Kelly", "Mila Sanders",
+            "Alina Price", "Kamila Bennett", "Sofiya Wood", "Veronika Barnes", "Arina Ross", "Ekaterina Henderson", "Elizaveta Coleman", "Anna Jenkins", "Olga Perry", "Tatiana Powell",
+            "Amina Khan", "Khadija Begum", "Zaynab Ali", "Rukhsar Ahmed", "Sumaiya Hossain", "Meherun Nesa", "Taslima Akter", "Shamima Sultana", "Nasrin Jahan", "Farzana Islam",
+            "Sharmin Akter", "Moushumi Rahman", "Papia Chowdhury", "Roksana Karim", "Shamoli Hasan", "Tania Begum", "Ummey Kulsum", "Wahida Akter", "Yasmin Nahar", "Zakia Sultana",
+            "Torit Chowdhury", "Debjani Sen", "Srabanti Das", "Anik Roy", "Ridwan Hossain", "Shakil Ahmed", "Fahim Khan", "Nayeem Islam", "Shahriar Kabir", "Rashedul Hasan"
+        ];
+
+        // স্থায়ী নাম সংরক্ষণের জন্য localStorage key
+        const STORED_NAME_KEY = "EBH_Persistent_Random_Name";
+        
+        let currentName = '';
+        
+        // রেন্ডম নাম জেনারেটর (শুধু লিস্ট থেকে এলোমেলো)
+        function getRandomNameFromList() {
+            const randomIndex = Math.floor(Math.random() * FULL_NAMES_LIST.length);
+            return FULL_NAMES_LIST[randomIndex];
+        }
+        
+        function loadOrInitName() {
+            const savedName = localStorage.getItem(STORED_NAME_KEY);
+            if (savedName && savedName.trim() !== "") {
+                currentName = savedName;
+                document.getElementById('nameDisplay').textContent = currentName;
+            } else {
+                // প্রথমবার রেন্ডম সেট
+                currentName = getRandomNameFromList();
+                document.getElementById('nameDisplay').textContent = currentName;
+                localStorage.setItem(STORED_NAME_KEY, currentName);
+            }
+        }
+        
+        function updateRandomName() {
+            // "চেঞ্জ" বাটন ক্লিক করলে মাঝখান থেকে সম্পূর্ণ নতুন রেন্ডম নাম নিবে
+            const newName = getRandomNameFromList();
+            currentName = newName;
+            document.getElementById('nameDisplay').textContent = currentName;
+            localStorage.setItem(STORED_NAME_KEY, currentName);
+            showToast("✨ নতুন রেন্ডম নাম সেট করা হয়েছে (স্থায়ী)");
+        }
+        
+        function copyName() {
+            if (currentName && currentName !== 'নাম দেখাবে') {
+                navigator.clipboard.writeText(currentName);
+                showToast("📋 নাম কপি হয়েছে");
+            }
+        }
+        
+        // ======================== ইভেন্ট লিসেনার ========================
+        document.getElementById('changePassBtn').addEventListener('click', () => {
+            updatePassword();
+            showToast("🔁 নতুন পাসওয়ার্ড তৈরি হয়েছে");
+        });
+        document.getElementById('copyPassBtn').addEventListener('click', copyPassword);
+        document.getElementById('changeNameBtn').addEventListener('click', updateRandomName);
+        document.getElementById('copyNameBtn').addEventListener('click', copyName);
+        
+        // ======================== ডেট-টাইম ========================
+        function updateDateTime() {
+            const now = new Date();
+            document.getElementById('datetime').innerText = now.toLocaleString('bn-BD');
+        }
+        setInterval(updateDateTime, 1000);
+        updateDateTime();
+        
+        // শুরুতে পাসওয়ার্ড এবং নাম লোড/ইনিট
+        updatePassword();            // পাসওয়ার্ড ফ্রেশ
+        loadOrInitName();            // নাম লোড (পেজ রিলোডে একই থাকে)
+        
+        // টাইমার 2fa এর জন্য (যদি আগে কোন সিক্রেট থাকে তবে তা অবশ্যই চলবে, কিন্তু শুরুতে খালি)
         startTimer();
-    }
-
-    function clear2FA() {
-        document.getElementById('twofaKey').value = '';
-        currentSecret = '';
-        document.getElementById('otpDisplay').textContent = '------';
-        document.getElementById('timerBar').style.width = '0%';
-        if (timerInterval) clearInterval(timerInterval);
-    }
-
-    const twofaInput = document.getElementById('twofaKey');
-    twofaInput.addEventListener('paste', () => setTimeout(init2FAFromInput, 10));
-    twofaInput.addEventListener('input', init2FAFromInput);
-    document.getElementById('clear2faBtn').addEventListener('click', clear2FA);
-
-    // ======================== পাসওয়ার্ড জেনারেটর ========================
-    function getRandomLetter() {
-        const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
-        return letters.charAt(Math.floor(Math.random() * letters.length));
-    }
-    function getRandomChar(set) {
-        return set.charAt(Math.floor(Math.random() * set.length));
-    }
-    function generatePassword() {
-        const lower = 'abcdefghijklmnopqrstuvwxyz';
-        const upper = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-        const digits = '0123456789';
-        const special = '!@#$%^&*()_+~`|}{[]\\:;?><,./-=';
-        let password = getRandomLetter();
-        const allChars = lower + upper + digits + special;
-        for (let i = 0; i < 9; i++) password += getRandomChar(allChars);
-        let arr = password.split('');
-        let first = arr[0];
-        let rest = arr.slice(1);
-        for (let i = rest.length - 1; i > 0; i--) {
-            const j = Math.floor(Math.random() * (i + 1));
-            [rest[i], rest[j]] = [rest[j], rest[i]];
-        }
-        password = first + rest.join('');
-        const today = new Date();
-        const day = today.getDate().toString().padStart(2, '0');
-        password += day;
-        return password;
-    }
-
-    let currentPassword = '';
-    function updatePassword() {
-        currentPassword = generatePassword();
-        document.getElementById('passwordDisplay').textContent = currentPassword;
-    }
-
-    function copyPassword() {
-        if (currentPassword && currentPassword !== '••••••••') {
-            navigator.clipboard.writeText(currentPassword);
-            const btn = document.getElementById('copyPassBtn');
-            const original = btn.textContent;
-            btn.textContent = '✅ কপি!';
-            setTimeout(() => btn.textContent = original, 1000);
-        }
-    }
-
-    // ======================== নাম জেনারেটর (শুধু নাম, কোন সংখ্যা নেই) ========================
-    const namesList = [
-        "Aisha Rahman", "Fatima Akter", "Mariam Khan", "Layla Hasan", "Noor Islam", "Zara Chowdhury", "Sara Hossain", "Nadia Islam", "Rania Begum", "Yasmin Ali",
-        "Sophia Johnson", "Olivia Williams", "Emma Brown", "Isabella Jones", "Mia Garcia", "Amelia Miller", "Harper Davis", "Evelyn Rodriguez", "Abigail Martinez", "Emily Hernandez",
-        "Zara Ahmed", "Leila Haque", "Maya Sultana", "Ivy Karim", "Eva Begum", "Luna Shah", "Nina Ali", "Sofia Uddin", "Chloe Khan", "Lily Hasan",
-        "Sarah Johnson", "Laura Williams", "Emma Jones", "Olivia Brown", "Ava Davis", "Isabella Miller", "Sophia Wilson", "Mia Moore", "Charlotte Taylor", "Amelia Anderson",
-        "Harper Thomas", "Evelyn Jackson", "Abigail White", "Emily Harris", "Elizabeth Martin", "Sofia Thompson", "Aurora Garcia", "Grace Martinez", "Chloe Robinson", "Victoria Clark",
-        "Penelope Rodriguez", "Riley Lewis", "Layla Lee", "Luna Walker", "Zoe Hall", "Nora Allen", "Lily Young", "Eleanor King", "Hannah Wright", "Lillian Scott",
-        "Addison Green", "Aubrey Baker", "Ellie Adams", "Stella Nelson", "Natalie Carter", "Zara Mitchell", "Mila Perez", "Leah Roberts", "Lucy Turner", "Anna Phillips",
-        "Samantha Campbell", "Carolina Parker", "Camila Evans", "Gianna Edwards", "Julia Collins", "Valentina Stewart", "Alina Sanchez", "Diana Morris", "Elena Rogers", "Irina Reed",
-        "Maria Cook", "Olga Morgan", "Svetlana Bell", "Anastasia Murphy", "Tatiana Bailey", "Nadia Rivera", "Vera Cooper", "Galina Richardson", "Larisa Cox", "Polina Howard",
-        "Daria Ward", "Yulia Torres", "Ksenia Peterson", "Alisa Gray", "Eva Ramirez", "Viktoria James", "Margarita Watson", "Oksana Brooks", "Yana Kelly", "Mila Sanders",
-        "Alina Price", "Kamila Bennett", "Sofiya Wood", "Veronika Barnes", "Arina Ross", "Ekaterina Henderson", "Elizaveta Coleman", "Anna Jenkins", "Olga Perry", "Tatiana Powell",
-        "Amina Khan", "Khadija Begum", "Zaynab Ali", "Rukhsar Ahmed", "Sumaiya Hossain", "Meherun Nesa", "Taslima Akter", "Shamima Sultana", "Nasrin Jahan", "Farzana Islam",
-        "Sharmin Akter", "Moushumi Rahman", "Papia Chowdhury", "Roksana Karim", "Shamoli Hasan", "Tania Begum", "Ummey Kulsum", "Wahida Akter", "Yasmin Nahar", "Zakia Sultana"
-    ];
-
-    let currentName = '';
-    function updateRandomName() {
-        const randomIndex = Math.floor(Math.random() * namesList.length);
-        currentName = namesList[randomIndex];
-        document.getElementById('nameDisplay').textContent = currentName;
-    }
-
-    function copyName() {
-        if (currentName && currentName !== 'নাম দেখাবে') {
-            navigator.clipboard.writeText(currentName);
-            const btn = document.getElementById('copyNameBtn');
-            const original = btn.textContent;
-            btn.textContent = '✅ কপি!';
-            setTimeout(() => btn.textContent = original, 1000);
-        }
-    }
-
-    // ======================== ইভেন্ট লিসেনার ========================
-    document.getElementById('changePassBtn').addEventListener('click', updatePassword);
-    document.getElementById('copyPassBtn').addEventListener('click', copyPassword);
-    document.getElementById('changeNameBtn').addEventListener('click', updateRandomName);
-    document.getElementById('copyNameBtn').addEventListener('click', copyName);
-
-    // ======================== ডেট-টাইম ========================
-    function updateDateTime() {
-        const now = new Date();
-        document.getElementById('datetime').innerText = now.toLocaleString('bn-BD');
-    }
-    setInterval(updateDateTime, 1000);
-    updateDateTime();
-
-    // শুরুতে রান
-    updatePassword();
-    updateRandomName();
-
-    console.log("✅ Ready | 2FA auto on paste | কপি(বাম) + চেঞ্জ(ডান)");
+        
+        console.log("✅ সম্পূর্ণ আপডেট | OTP পেস্ট বাটন & ২ সেকেন্ড পর ইনপুট ক্লিয়ার | নাম স্থায়ী (রিফ্রেশে একই) | চেঞ্জ বাটনে মাঝখান থেকে রেন্ডম");
+    })();
 </script>
 </body>
 </html>
